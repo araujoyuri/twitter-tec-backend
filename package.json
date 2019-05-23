@@ -1,0 +1,23 @@
+{
+  "name": "twitter-backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "repository": "https://github.com/araujoyuri/twitter-tec-backend",
+  "license": "MIT",
+  "scripts": {
+    "start:dev": "./node_modules/.bin/nodemon src/server.js",
+    "start:prod": "./node_modules/.bin/pm2 start src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "hapi": "^18.1.0",
+    "joi": "^14.3.1",
+    "mongoose": "^5.5.10",
+    "rest-hapi": "^1.6.0"
+  },
+  "devDependencies": {
+    "boom": "^7.3.0",
+    "nodemon": "^1.19.0",
+    "pm2": "^3.5.0"
+  }
+}
