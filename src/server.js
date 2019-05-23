@@ -7,7 +7,10 @@ async function api(){
 		let server = Hapi.Server({ port: 8080 })
 
 		let config = {
-			appTitle: "My API",
+			appTitle: "Twitter API",
+			mongo: {
+				URI: 'mongodb://localhost/twitter_db'
+			}
 		};
 
 		await server.register({
