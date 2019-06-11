@@ -1,6 +1,4 @@
-let Joi = require('joi')
 const bcrypt = require('bcryptjs')
-const RestHapi = require('rest-hapi')
 
 module.exports = function(mongoose) {
   let modelName = 'user'
@@ -23,47 +21,49 @@ module.exports = function(mongoose) {
   Schema.statics = {
     collectionName: modelName,
     routeOptions: {
-      associations: {
-        tweets: {
-          type: 'ONE_MANY',
-          foreignField: 'tweets',
-          model: 'tweet'
-        }
-      },
       create: {
-        pre: function (payload, logger) {
-          payload.password = mongoose
+        pre: function(payload, logger) {
+          let hashedPassword = mongoose
             .model('user')
             .generatePasswordHash(payload.password)
+
+          payload.password = hashedPassword
 
           return payload
         }
       }
     },
 
-    generatePasswordHash: function (password) {
-      const salt = bcrypt.genSaltSync(10)
-      return bcrypt.hashSync(password, salt)
+    generatePasswordHash: function(password) {
+      let hash = password
+      let salt = bcrypt.genSaltSync(10)
+      hash = bcrypt.hashSync(password, salt)
+      return hash
     },
 
-    findByCredentials: async function (login, password) {
+    findByCredentials: async function(login, password) {
       const self = this
 
       const query = {
         login: login.toLowerCase()
       }
 
-      const mongooseQuery = self.findOne(query)
+      let mongooseQuery = self.findOne(query)
 
-      const user = await mongooseQuery.lean()
+      let user = await mongooseQuery.lean()
 
-      if (!user) return false
+      if (!user) {
+        return false
+      }
 
       const source = user.password
 
-      const passwordMatch = await bcrypt.compare(password, source)
-      if (passwordMatch) return user
-      else return false
+      let passwordMatch = await bcrypt.compare(password, source)
+      if (passwordMatch) {
+        return user
+      } else {
+        return false
+      }
     }
   }
 

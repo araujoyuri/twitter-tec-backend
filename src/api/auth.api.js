@@ -1,52 +1,50 @@
 const Joi = require('joi')
-const RestHapi = require("rest-hapi")
+const RestHapi = require('rest-hapi')
 
-module.exports = function(server, mongoose, logger) {
+module.exports = function (server, mongoose, logger) {
   // Registration endpoint
-  (function() {
-    const Log = logger.bind("Register")
-    const User = mongoose.model("user")
+  (function () {
+    const Log = logger.bind('Register')
+    const User = mongoose.model('user')
 
-    Log.note("Generating Registration endpoint")
+    Log.note('Generating Registration endpoint')
 
     server.route({
-      method: "POST",
-      path: "/register",
+      method: 'POST',
+      path: '/register',
       config: {
-        handler: async function(request, h) {
-          const { login, password } = request.payload;
-          return await RestHapi.create(User, { login, password }, Log);
+        handler: async function (request, h) {
+          const { login, password } = request.payload
+          return await RestHapi.create(User, { login, password }, Log)
         },
         auth: false,
         validate: {
           payload: {
             login: Joi.string()
-              .login()
               .lowercase()
               .required(),
             password: Joi.string().required()
           }
         },
-        tags: ["api", "register"],
+        tags: ['api', 'register'],
         plugins: {
-          "hapi-swagger": {}
+          'hapi-swagger': {}
         }
       }
     })
-  })()
+  })();
 
   // Login Endpoint
-  (function() {
-    const Log = logger.bind("Login")
-    const User = mongoose.model("user")
+  (function () {
+    const Log = logger.bind('Login')
+    const User = mongoose.model('user')
 
-    const Boom = require("boom")
+    const Boom = require('boom')
 
-    Log.note("Generating Login endpoint")
+    Log.note('Generating Login endpoint')
 
-    const loginHandler = async function(request, h) {
-      let token = "";
-      let response = {};
+    const loginHandler = async function (request, h) {
+      let response = {}
 
       let user = await User.findByCredentials(
         request.payload.login,
@@ -55,41 +53,40 @@ module.exports = function(server, mongoose, logger) {
       )
 
       if (!user) {
-        throw Boom.unauthorized("Invalid login or Password.")
+        throw Boom.unauthorized('Invalid Login or Password.')
       }
 
-      delete user.password;
+      delete user.password
 
-      token = server.methods.createToken(user);
+      const token = server.methods.createToken(user)
 
       response = {
         user,
         token
-      };
+      }
 
-      return response;
-    };
+      return response
+    }
 
     server.route({
-      method: "POST",
-      path: "/login",
+      method: 'POST',
+      path: '/login',
       config: {
         handler: loginHandler,
         auth: false,
         validate: {
           payload: {
             login: Joi.string()
-              .login()
               .lowercase()
               .required(),
             password: Joi.string().required()
           }
         },
-        tags: ["api", "login"],
+        tags: ['api', 'login'],
         plugins: {
-          "hapi-swagger": {}
+          'hapi-swagger': {}
         }
       }
-    });
-  })();
-};
+    })
+  })()
+}
