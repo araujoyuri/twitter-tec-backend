@@ -6,7 +6,8 @@ let Auth = require('./plugins/auth.plugin')
 async function api() {
   try {
     let server = Hapi.Server({
-      port: 5000
+      port: 5000,
+      routes: { cors: true }
     })
 
     let config = {
@@ -16,7 +17,11 @@ async function api() {
       },
       authStrategy: Auth.strategy,
       modelPath: 'src/models',
-      apiPath: 'src/api'
+      apiPath: 'src/api',
+      cors: {
+        additionalHeaders: ['*'],
+        additionalExposedHeaders: ['*']
+      }
     }
 
     await server.register(Auth)

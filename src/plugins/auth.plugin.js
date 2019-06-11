@@ -40,9 +40,9 @@ function createToken(user) {
 
   const { login, _id } = user
 
-  token = Jwt.sign({ user: { login, _id } }, jwtSecret, {
+  const token = Jwt.sign({ user: { login, _id } }, jwtSecret, {
     algorithm: 'HS256',
-    expiresIn: '1m'
+    expiresIn: '7d'
   })
 
   return token
