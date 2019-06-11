@@ -21,6 +21,13 @@ module.exports = function(mongoose) {
   Schema.statics = {
     collectionName: modelName,
     routeOptions: {
+      associations: {
+        tweets: {
+          type: 'ONE_MANY',
+          foreignField: 'tweets',
+          model: 'tweet'
+        }
+      },
       create: {
         pre: function(payload, logger) {
           let hashedPassword = mongoose
