@@ -26,7 +26,8 @@ module.exports = function(mongoose) {
 					type: 'MANY_ONE',
 					model: 'user'
 				}
-			}
+			},
+			readAuth: false
 		}
 	}
 
